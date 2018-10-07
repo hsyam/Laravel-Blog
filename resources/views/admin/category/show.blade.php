@@ -49,17 +49,33 @@
                                 <td><a href="{{route('category.edit' , $cat->id)}}"><span class="glyphicon glyphicon-edit"></span></a></td>
 
                                 <td>
-                                    <form method="post" id="delete-form-{{$cat->id}}" action="{{route('category.destroy' , $cat->id)}}" style="display: none">
-                                        {{csrf_field()}}
-                                        {{method_field('DELETE')}}
-                                    </form>
-                                    <a href="{{route('category.index')}}" onclick="
-
-                                            if (confirm('Are you want to delete category')){
-                                            event.preventDefault();
-                                            document.getElementById('delete-form-{{$cat->id}}').submit();
-                                            }else {event.preventDefault();}
-                                            "><span class="glyphicon glyphicon-trash"></span></a>
+                                    <a href="#" data-toggle="modal" data-target="#delete-{{$cat->id}}">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                    <div class="modal modal-danger fade" id="delete-{{$cat->id}}" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span></button>
+                                                    <h4 class="modal-title">Danger Modal</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are You sure to Delete <strong>{{$cat->name}}</strong></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                                                    <form action="{{route('category.destroy' , $cat->id)}}" method="post">
+                                                        {{csrf_field()}}
+                                                        {{method_field('DELETE')}}
+                                                        <input type="submit" class="btn btn-outline" name="submit" value="Delete">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
                                 </td>
 
                             </tr>

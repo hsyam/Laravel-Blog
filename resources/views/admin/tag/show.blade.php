@@ -49,17 +49,33 @@
                                 <td><a href="{{route('tag.edit' , $tag->id)}}"><span class="glyphicon glyphicon-edit"></span></a></td>
 
                                 <td>
-                                    <form method="post" id="delete-form-{{$tag->id}}" action="{{route('tag.destroy' , $tag->id)}}" style="display: none">
-                                        {{csrf_field()}}
-                                        {{method_field('DELETE')}}
-                                    </form>
-                                    <a href="{{route('tag.index')}}" onclick="
-
-                                    if (confirm('Are you want to delete This')){
-                                    event.preventDefault();
-                                    document.getElementById('delete-form-{{$tag->id}}').submit();
-                                    }else {event.preventDefault();}
-                                    "><span class="glyphicon glyphicon-trash"></span></a>
+                                    <a href="#" data-toggle="modal" data-target="#delete-{{$tag->id}}">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </a>
+                                    <div class="modal modal-danger fade" id="delete-{{$tag->id}}" style="display: none;">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">×</span></button>
+                                                    <h4 class="modal-title">Danger Modal</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Are You sure to Delete <strong>{{$tag->name}}</strong></p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                                                    <form action="{{route('tag.destroy' , $tag->id)}}" method="post">
+                                                        {{csrf_field()}}
+                                                        {{method_field('DELETE')}}
+                                                        <input type="submit" class="btn btn-outline" name="submit" value="Delete">
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <!-- /.modal-content -->
+                                        </div>
+                                        <!-- /.modal-dialog -->
+                                    </div>
                                 </td>
 
                             </tr>

@@ -103,21 +103,35 @@
                                             <td>{{$post->created_at }}</td>
                                             <td><a href="{{route('post.restore', $post->id)}}">Restore</a></td>
                                             <td><a href="{{route('post.edit' , $post->id)}}"><span class="glyphicon glyphicon-edit"></span></a></td>
-
                                             <td>
-                                                <form method="post" id="delete-form-{{$post->id}}" action="{{route('post.destroy' , $post->id )}}" style="display: none">
-                                                    {{csrf_field()}}
-                                                    {{method_field('DELETE')}}
-                                                </form>
-                                                <a href="{{route('post.index')}}" onclick="
-
-                                                        if (confirm('Are you want to delete post')){
-                                                        event.preventDefault();
-                                                        document.getElementById('delete-form-{{$post->id}}').submit();
-                                                        }else {event.preventDefault();}
-                                                        "><span class="glyphicon glyphicon-trash"></span></a>
+                                                <a href="#" data-toggle="modal" data-target="#delete-{{$post->id}}">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </a>
+                                                <div class="modal modal-danger fade" id="delete-{{$post->id}}" style="display: none;">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">×</span></button>
+                                                                <h4 class="modal-title">Danger Modal</h4>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <p>Are You sure to Delete <strong>{{$post->title}}</strong></p>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                                                                <form action="{{route('post.destroy' , $post->id)}}" method="post">
+                                                                    {{csrf_field()}}
+                                                                    {{method_field('DELETE')}}
+                                                                    <input type="submit" class="btn btn-outline" name="submit" value="Delete">
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                        <!-- /.modal-content -->
+                                                    </div>
+                                                    <!-- /.modal-dialog -->
+                                                </div>
                                             </td>
-
                                         </tr>
 
                                         </tr>
