@@ -21,3 +21,26 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\Model\user\post::class, function (Faker $faker) {
+    return [
+        'title' => $faker->sentence,
+        'subtitle' => $faker->word,
+        'slug' =>  $faker->word ,
+        'body' => implode($faker->paragraphs($nb = 30) , ','),
+    ];
+});
+
+$factory->define(App\Model\user\category::class, function (Faker $faker) {
+    return [
+        'name' => implode($faker->words(3 ) , ' '),
+        'slug' =>  $faker->word ,
+    ];
+});
+
+$factory->define(App\Model\user\tag::class, function (Faker $faker) {
+    return [
+        'name' => implode($faker->words(3 ) , ' '),
+        'slug' =>  $faker->word ,
+    ];
+});
