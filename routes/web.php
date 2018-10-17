@@ -20,8 +20,14 @@ Route::group(['namespace' => 'User'] , function (){
 
 
 Route::group(['namespace' => 'Admin'],function (){
+
     Route::get('admin/home' , 'HomeController@index' )->name('admin.home');
 
+    // DataTable Route (For generate Json Data used for DataTable Jquery Plugin  )
+    Route::get('admin/post/getPostDatatable' , 'PostController@getPostDatatable' )->name('post.getPostDatatable');
+    Route::get('admin/post/getPostDatatableTrash' , 'PostController@getPostDatatableTrash' )->name('post.getPostDatatableTrash');
+
+    // Main Resources
     Route::resources([
         'admin/post' => 'PostController',
         'admin/category' => 'CategoryController',
@@ -29,8 +35,12 @@ Route::group(['namespace' => 'Admin'],function (){
         'admin/tag' => 'TagController',
         'admin/user' => 'UserController',
     ]);
+
+    // Soft Deleting Routes
     Route::get('admin/post/{id}/softdelete' ,'PostController@softdel')->name('post.softdelete');
     Route::get('admin/post/{id}/restore' ,'PostController@restore')->name('post.restore');
+
+
 });
 
 

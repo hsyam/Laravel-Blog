@@ -10,4 +10,8 @@ class post extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
+    public function tags(){
+        return $this->belongsToMany('App\Model\user\tag' , 'post_tags' );
+    }
+
 }

@@ -36,7 +36,7 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div class="box-body">
-                                <table class="admintable table table-bordered table-striped">
+                                <table id="postTable" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                         <th>S.No</th>
@@ -50,17 +50,6 @@
                                     </thead>
                                     <tbody>
 
-                                    @foreach($posts as $post)
-                                        <tr>
-                                            <td>{{$loop->index + 1}}</td>
-                                            <td>{{$post->title}}</td>
-                                            <td>{{$post->subtitle }}</td>
-                                            <td>{{$post->slug }}</td>
-                                            <td>{{$post->created_at }}</td>
-                                            <td><a href="{{route('post.edit' , $post->id)}}"><span class="glyphicon glyphicon-edit"></span></a></td>
-                                            <td><a href="{{route('post.softdelete', $post->id)}}">Move to Trash</a></td>
-                                        </tr>
-                                    @endforeach
                                     </tbody>
                                     <tfoot>
                                     <tr>
@@ -78,8 +67,8 @@
                         </div>
                         <!-- /.tab-pane -->
                         <div class="tab-pane " id="tab_2">
-                            <div class="box-body ">
-                                <table  class="admintable table table-bordered table-striped">
+                            <div class="box-body">
+                                <table  id="postTableTrash" class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
                                         <th>S.No</th>
@@ -94,48 +83,6 @@
                                     </thead>
                                     <tbody>
 
-                                    @foreach($trash as $post)
-                                        <tr>
-                                            <td>{{$loop->index + 1}}</td>
-                                            <td>{{$post->title}}</td>
-                                            <td>{{$post->subtitle }}</td>
-                                            <td>{{$post->slug }}</td>
-                                            <td>{{$post->created_at }}</td>
-                                            <td><a href="{{route('post.restore', $post->id)}}">Restore</a></td>
-                                            <td><a href="{{route('post.edit' , $post->id)}}"><span class="glyphicon glyphicon-edit"></span></a></td>
-                                            <td>
-                                                <a href="#" data-toggle="modal" data-target="#delete-{{$post->id}}">
-                                                    <span class="glyphicon glyphicon-trash"></span>
-                                                </a>
-                                                <div class="modal modal-danger fade" id="delete-{{$post->id}}" style="display: none;">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                    <span aria-hidden="true">×</span></button>
-                                                                <h4 class="modal-title">Danger Modal</h4>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <p>Are You sure to Delete <strong>{{$post->title}}</strong></p>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-                                                                <form action="{{route('post.destroy' , $post->id)}}" method="post">
-                                                                    {{csrf_field()}}
-                                                                    {{method_field('DELETE')}}
-                                                                    <input type="submit" class="btn btn-outline" name="submit" value="Delete">
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                        <!-- /.modal-content -->
-                                                    </div>
-                                                    <!-- /.modal-dialog -->
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        </tr>
-                                    @endforeach
                                     </tbody>
                                     <tfoot>
                                     <tr>
@@ -174,8 +121,96 @@
 
     <script>
         $(function () {
-            $('.admintable').DataTable()
+            $('#postTable').DataTable({
+                "processing" : true ,
+                "serverSide" : true ,
+                "autoWidth": false ,
+                "scrollX": true ,
+                "ajax" : "{{route('post.getPostDatatable')}}" ,
+                "columns" :[
+                    {"data" : "id" } ,
+                    {"data" : "title" } ,
+                    {"data" : "subtitle" } ,
+                    {"data" : "slug" } ,
+                    {"data" : "created_at" } ,
+                    // Edit Button
+                    {"data" : "id" ,
+                        render: function ( data, type, row ) {
+                            let routeLink = "{{route('post.edit'  , 'dataId') }}";
+                            routeLink = routeLink.replace('dataId' , data)
+                            return '<a href="'+routeLink+'"><span class="glyphicon glyphicon-edit"></span></a>';
+                        } }
+                    ,{"data" : "id" , render:function (data) {
+                            let routelink = "{{route('post.softdelete' , 'dataId')}}";
+                            routelink = routelink.replace('dataId' , data);
+                            return '<a href="'+routelink+'">Move to Trash</a>'
+                        }
+                    }
+                ]
+            });
 
+
+            $('#postTableTrash').DataTable({
+                "processing" : true ,
+                "serverSide" : true ,
+                "autoWidth": false ,
+                "scrollX": true ,
+                "ajax" : "{{route('post.getPostDatatableTrash')}}" ,
+                "columns" :[
+                    {"data" : "id" } ,
+                    {"data" : "title" } ,
+                    {"data" : "subtitle" } ,
+                    {"data" : "slug" } ,
+                    {"data" : "created_at" } ,
+                    // Restore Button
+                    {"data" : "id" , render:function (data) {
+                            var routelink = "{{route('post.restore' , 'dataId')}}";
+                            routelink = routelink.replace('dataId' , data);
+                            return '<a href="'+routelink+'">Restore</a>' ;
+                        }},
+                    // Edit Button
+                    {"data" : "id" ,
+                        render: function ( data ) {
+                            let routeLink = "{{route('post.edit'  , 'dataId') }}";
+                            routeLink = routeLink.replace('dataId' , data)
+                            return '<a href="'+routeLink+'"><span class="glyphicon glyphicon-edit"></span></a>';
+                        } }
+
+                     //Delete Button
+                    , {"data" : "id" ,
+                        render: function ( data, type, row ) {
+                            let routeLink = "{{route('post.destroy'  , 'dataId') }}";
+                            routeLink = routeLink.replace('dataId' , data);
+
+
+                            return  '<a href="#" data-toggle="modal" data-target="#delete-'+data+'"> <span class="glyphicon glyphicon-trash"></span> </a>' +
+                                '  <div class="modal modal-danger fade" id="delete-'+data+'" style="display: none;">' +
+                                '   <div class="modal-dialog">' +
+                                '   <div class="modal-content">' +
+                                '   <div class="modal-header">' +
+                                '  <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                                '     <span aria-hidden="true">×</span></button>' +
+                                '    <h4 class="modal-title">Danger Modal</h4>' +
+                                '  </div>' +
+                                '   <div class="modal-body">' +
+                                '    <p>Are You sure to Delete </p>' +
+                                '</div>' +
+                                ' <div class="modal-footer">' +
+                                '   <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>' +
+                                '   <form action="'+routeLink+'" method="post">' +
+                                '     {{csrf_field()}}' +
+                                '    {{method_field("DELETE")}}' +
+                                '  <input type="submit" class="btn btn-outline" name="submit" value="Delete">' +
+                                '  </form>' +
+                                ' </div>' +
+                                '</div>' +
+
+                                '</div>'
+
+                        }
+                    }
+                ]
+            })
         })
     </script>
 

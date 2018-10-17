@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Model\user\post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -112,8 +113,7 @@ class PostController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
+     * Move to trash (Soft Delete)
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
@@ -128,6 +128,11 @@ class PostController extends Controller
 
     }
 
+    /**
+     * Restore Posts From trash
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function restore($id){
         $post = post::where('id' , $id)->onlyTrashed();
         if (count($post->get())){
@@ -138,6 +143,12 @@ class PostController extends Controller
         return redirect(route('post.index'))->with('error_msg', 'Post Not Found');
 
     }
+
+    /**
+     * Remove Posts
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy($id)
     {
         $post =  post::withTrashed()->where('id' ,$id) ;
@@ -145,5 +156,23 @@ class PostController extends Controller
             return redirect(route('post.index'))->with('success', 'Post Deleted!');
         }
         return redirect(route('post.index'))->with('error_msg', 'Post Not Found!');
+    }
+
+    /**
+     * Return Json data for dataTable Jquery Plugin
+     * Yajra Data Package
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPostDatatable(){
+        return datatables(post::all())->toJson();
+    }
+    /**
+     * Return Json data for dataTable Jquery Plugin
+     * Yajra Data Package
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getPostDatatableTrash(){
+
+        return datatables(post::onlyTrashed()->get())->toJson();
     }
 }

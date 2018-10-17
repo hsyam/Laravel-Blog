@@ -38,6 +38,14 @@ $factory->define(App\Model\user\category::class, function (Faker $faker) {
     ];
 });
 
+$factory->define(App\Model\user\post_tag::class, function (Faker $faker) {
+    return [
+        'post_id' => rand(1,50),
+        'tag_id' =>  rand(1,50) ,
+    ];
+});
+
+
 $factory->define(App\Model\user\tag::class, function (Faker $faker) {
     return [
         'name' => implode($faker->words(3 ) , ' '),

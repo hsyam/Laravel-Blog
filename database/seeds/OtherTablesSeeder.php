@@ -13,5 +13,6 @@ class OtherTablesSeeder extends Seeder
     {
         factory(App\Model\user\tag::class , 50 )->create();
         factory(App\Model\user\category::class , 50 )->create();
+        factory(App\Model\user\post_tag::class , 50 )->create();
     }
 }
